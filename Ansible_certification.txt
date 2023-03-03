@@ -1,0 +1,34 @@
+Ansible Certification Course
+
+--check (this is a dry run)
+
+
+--start-at-task (this will start at a certain task)
+
+you can tag your tasks in the yaml
+
+then use --tasks "install" for example to only run that task
+
+or --skip-tags "install"
+
+
+
+EX:
+
+---
+- name: Create a myfile.txt
+  hosts: web1
+  gather_facts: no
+  tasks:
+    - name: Create myfile.txt
+      file:
+        path: /root/myfile.txt
+        state: touch
+        
+        
+        
+
+
+
+
+
