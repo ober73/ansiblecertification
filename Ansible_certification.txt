@@ -27,6 +27,61 @@ EX:
         
         
         
+ANSIBLE FACTS
+
+setup module gathers facts
+
+info stored in var: ansible_facts
+
+tasks:
+- debug
+    var: ansible_facts
+    
+You can turn this off by
+gather_facts: no
+
+Settings in Playbooks always takes precedence over settings in ansible.cfg
+
+
+
+EX:
+
+ansible -m setup localhost | grep distribution_version
+
+
+ansible -i inventory -m setup web1 | grep distribution
+
+
+Gather Facts and store:
+
+ansible -m setup web1 -i inventory > /home/thor/playbooks/web/web-facts.txt
+
+
+ANSIBLE CONFIGURATION FILES
+
+you can use separate ansible.cfg files for different playbooks if put in the same directory as the playbook
+
+or you can use var EX:
+
+$ANSIBLE_CONFIG=/opt/...
+
+Variable change what is in the cfg file to upper case
+
+EX:
+gathering = implicit
+
+ANSIBLE_GATHERING=explicit
+
+use shell EXPORT, this takes priority
+
+
+ansible-config list
+
+ansible-config view
+
+ansible-config dump
+
+
 
 
 
