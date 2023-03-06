@@ -82,6 +82,198 @@ ansible-config view
 ansible-config dump
 
 
+Install and Configure
+
+
+control node
+
+use pip for latest python packet manager
+
+sudo pip install ansible
+
+CREATING AND DISTRIBUTING SSH KEYS
+
+
+ssh-keygen
+
+id_rsa id_rsa.pub
+
+ssh -i id_rsa user1@server1
+
+ssh-copy-id -i id_rsa user1@server1
+
+you can get rid of the ssh in hosts file
+
+make sure to specify the ansible_user=user1
+
+
+Follow below given steps:
+
+Edit the inventory file to use the SSH private key.
+vi playbooks/inventory
+Add ansible_ssh_private_key_file=~/.ssh/ansible
+
+
+AD HOC COMMANDS
+
+
+ansible -m ping all (m is for module)
+
+you can also run a command directly
+
+EX:
+
+ansible -a 'cat /etc/hosts/' all
+
+you can add to these priveldge 
+
+--become
+
+--become-user nginx
+
+
+TO GATHER FACTS:
+
+ansible -m setup localhost > /tmp/ansible_facts.txt
+
+
+ansible -m ping -i /home/thor/playbooks/inventory  all
+
+
+RUN A COMMAND
+
+ansible -m command -a  date -i /home/thor/playbooks/inventory  web1
+
+
+SHELL SCRIPTS
+
+EX:
+
+shell-script.sh
+
+export ANSIBLE_GATHERING=explicit
+ansible -m ping all
+ansible -a 'cat /etc/hosts' all
+ansible-playbook playbook.yml
+
+then
+
+sh shell-script.sh
+
+or
+
+chmod 755 shell-script.sh
+
+
+
+ansible all -a "hostname" -i inventory
+ansible node00 -m copy -a "src=/etc/resolv.conf dest=/tmp/resolv.conf" -i inventory
+
+
+
+Follow below given steps:
+
+Create playbook.yml.
+vi playbook.yml
+Add below given code.
+---
+- hosts: all
+  tasks:
+    - shell: cat /etc/redhat-release
+Create host_data.sh script.
+vi host_data.sh
+Add below given code.
+export ANSIBLE_GATHERING=False
+ansible all -m shell -a uptime -i inventory
+ansible-playbook -i inventory playbook.yml -vv
+Make it executable.
+chmod +x host_data.sh
+
+
+
+PRIVILEDGE ESCALATION
+
+
+sudo pfexec doas ksu runas
+
+su mysql (become a user)
+
+
+become: yes 
+
+you can specify which method
+
+become_method: doas (example)
+
+you can also use
+
+become_user: nginx
+
+you can set in inventory file or ansible.cfg
+
+--ask-become-pass
+
+EX:
+
+[thor@ansible-controller web1]$ cat file.yml 
+---
+- hosts: all
+  gather_facts: no
+  become: true
+  become_user: admin
+  tasks:
+    - name: Create a blank file
+      file:
+        path: /home/admin/test.txt
+        state: touch
+        
+        
+---
+- hosts: all
+  gather_facts: no
+  become: true
+  become_user: admin
+  tasks:
+    - name: Create a blank file
+      file:
+        path: /home/admin/test.txt
+        state: touch
+        
+        
+Boolean
+
+true yes false no etc
+
+
+--- is for the beginning of file you can merge multiple into one file
+
+
+double braces for variables
+
+options that expecct variables you don't need to use the double curly brackets
+
+example
+
+var: variable
+
+when conditional statement does not need it
+
+BUT
+
+with_items does expect a variable
+
+you need to encapsulate in quotes if only variable
+
+if the variable is in a message then you don't
+
+
+ansible_password is the new methond (so don't user ssh_pass)
+
+
+
+
+
+
 
 
 
